@@ -1,0 +1,81 @@
+digraph SportOntology {
+	label = "Sport Ontology";
+	
+	fontname="Arial";
+	fontsize=12;
+	// graphviz bug: edge [constraint=false] causing runtime exception
+	edge [shape=normal,fontsize=10,labeldistance=1.3];
+	ratio=1.5;
+	rankdir=TB;
+	sep="+12";
+	overlap=false; // false = Voronoi technique; scale
+	splines=true;
+	
+	node [style=filled,fillcolor="#78A9FF",color="#0443CC"];
+	
+	// classes
+	node [shape=box]; 
+	Athlete; Person [label="foaf:Person"]; 
+	Team; IndependentTeam; InterdependentTeam; Group [label="foaf:Group"];
+	SportOrganization; SportGoverningBody; SportsClub; Organization [label="foaf:Organization"];
+	Activity; Sport; Game;
+	Location;
+	RankingSystem; EliminationSystem; LadderSystem; GroupSystem; RoundRobin; SwissSystem;
+	Event [label="event:Event"];
+	Tournament; League; Playoff;
+	Match; TeamScore;
+	
+	// properties
+	node [shape=ellipse,fontsize=10,fillcolor="#EEEEEE",color="gray"];
+	firstName; teamNumber; season; leagueSystemLevel; division; street; score; rank; homeAdvantage;
+	
+	Athlete -> Person [label="subClassOf"];
+	Athlete -> firstName [dir=none,weight=2,label="rdfs:Literal"];
+	
+	EliminationSystem -> RankingSystem [label="subClassOf"];
+	LadderSystem -> RankingSystem [label="subClassOf"];
+	GroupSystem -> RankingSystem [label="subClassOf"];
+	RoundRobin -> GroupSystem [label="subClassOf"];
+	SwissSystem -> GroupSystem [label="subClassOf"];
+	
+	IndependentTeam -> Team [label="subClassOf"];
+	InterdependentTeam -> Team [label="subClassOf"];
+	Team -> Group [label="subClassOf"];
+	Team -> SportsClub [label="associatedSportsClub"];
+	Team -> Athlete [label="teamMate\n(subPropertyOf foaf:member)"];
+	Team -> teamNumber [dir=none,weight=2,label="xsd:int"];
+	
+	SportGoverningBody -> SportOrganization [label="subClassOf"];
+	SportsClub -> SportOrganization [label="subClassOf"];
+	SportOrganization -> Organization [label="subClassOf"];
+	SportOrganization -> Activity [label="play"];
+	
+	Sport -> Activity [label="subClassOf"];
+	Game -> Activity [label="subClassOf"];
+	
+	Location -> street [dir=none,weight=2,label="xsd:string"];
+	
+	Tournament -> Event [label="subClassOf"];
+	Tournament -> RankingSystem [label="rankingMethod"];
+	Tournament -> SportOrganization [label="organizedBy"];
+	Tournament -> Tournament [label="qualifiesFor"];
+	Playoff -> Tournament [label="subClassOf"];
+	League -> Tournament [label="subClassOf"];
+	League -> season [dir=none,weight=2,label="xsd:string"];
+	League -> leagueSystemLevel [dir=none,weight=2,label="xsd:int"];
+	League -> division [dir=none,weight=2,label="rdfs:Literal"];
+	
+	Match -> Match [len=9.0,label="subMatch\n(subPropertyOf event:sub_event)"];
+	Match -> Event [label="subClassOf"];
+	Match -> Location [label="place"];
+	Match -> TeamScore [label="outcome"];
+	Match -> Tournament [label="partOfTournament"];
+	Match -> Activity [label="play"];
+	
+	TeamScore -> Team [label="participant"];
+	TeamScore -> Athlete [label="participant"];
+	TeamScore -> score [dir=none,weight=2,label="xsd:int"];
+	TeamScore -> rank [dir=none,weight=2,label="xsd:int"];
+	TeamScore -> homeAdvantage [dir=none,weight=2,label="xsd:boolean"];
+	
+}

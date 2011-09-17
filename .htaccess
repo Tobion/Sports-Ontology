@@ -1,0 +1,4 @@
+# Directive to ensure *.owl and *.rdf files served as appropriate content type,
+# if not present in main apache config
+AddType application/xml .owl
+AddType application/rdf+xml .rdf
